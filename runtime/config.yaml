@@ -1,0 +1,7 @@
+core:
+  token: ""
+  maxthreads: 0
+log:
+  level: debug
+  dir: ./runtime/logs/ # Where should we keep the bot log file.
+  expiretime: 24h
