@@ -2,7 +2,13 @@ package cmd
 
 import (
 	"flag"
+	"context"
 
+	"github.com/msrevive/sylphiel/internal/system"
+
+	"github.com/disgoorg/disgo"
+	"github.com/disgoorg/disgo/bot"
+	"github.com/disgoorg/disgo/gateway"
 	"github.com/saintwish/auralog"
 )
 
@@ -50,16 +56,6 @@ func initLoggers(filename string, dir string, level string, expire string) {
 		ErrorFlag: flagsError,
 		DebugFlag: flagsDebug,
 	})
-
-	logAPI = auralog.New(auralog.Config{
-		Output: io.MultiWriter(os.Stdout, file),
-		Prefix: "[API] ",
-		Level: auralog.ToLogLevel(level),
-		Flag: flags,
-		WarnFlag: flagsWarn,
-		ErrorFlag: flagsError,
-		DebugFlag: flagsDebug,
-	})
 }
 
 func Run(args []string) error {
@@ -69,6 +65,12 @@ func Run(args []string) error {
 		fmt.Println("Running in Debug mode, do not use in production!")
 	}
 
+	fmt.Println("Loading config file...")
+	config, err := system.LoadConfig(flgs.configFile, flgs.debug)
+	if err != nil {
+		return err
+	}
+
 	fmt.Println("Initiating Loggers...")
 	initLoggers("server.log", config.Log.Dir, config.Log.Level, config.Log.ExpireTime)
 
@@ -76,4 +78,26 @@ func Run(args []string) error {
 	if config.Core.MaxThreads != 0 {
 		runtime.GOMAXPROCS(config.Core.MaxThreads)
 	}
+
+	logCore.Printf("Initiating Disgo (%d)...", disgo.Version)
+	client, err := disgo.New(config.Core.Token,
+		bot.WithGatewayConfigOpts(
+			gateway.WithIntents(
+				gateway.IntentGuilds,
+				gateway.IntentGuildMessages
+			)
+		)
+	)
+	if err != nil {
+		return err
+	}
+
+	logCore.Println("Connecting to Discord...")
+	if err = client.Open(context.TODO()); err != nil {
+		return err
+	}
+
+	s := make(chan os.Signal, 1)
+	signal.Notify(s, syscall.SIGINT, syscall.SIGTERM)
+	<-s
 }

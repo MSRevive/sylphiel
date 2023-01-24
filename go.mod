@@ -1,11 +1,15 @@
-module github.com/MSRevive/sylphiel
+module github.com/msrevive/sylphiel
 
 go 1.19
 
-require github.com/saintwish/auralog v1.0.3
+require (
+	github.com/disgoorg/disgo v0.14.1
+	github.com/saintwish/auralog v1.0.3
+	gopkg.in/ini.v1 v1.67.0
+	gopkg.in/yaml.v2 v2.4.0
+)
 
 require (
-	github.com/disgoorg/disgo v0.14.1 // indirect
 	github.com/disgoorg/json v1.0.0 // indirect
 	github.com/disgoorg/log v1.2.0 // indirect
 	github.com/disgoorg/snowflake/v2 v2.0.1 // indirect
