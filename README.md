@@ -1,2 +1,2 @@
 # sylphiel
-The bot used in the MSRebirth server.
+The bot used in the MSRebirth Discord server. Named after everyone's favourite NPC.
