@@ -92,11 +92,12 @@ func Run(args []string) error {
 		return err
 	}
 
-	logCore.Println("Connecting to Discord...")
+	defer client.Close(context.TODO())
 	if err = client.Open(context.TODO()); err != nil {
 		return err
 	}
 
+	logCore.Println("Bot is now running. Press CTRL-C to exit.")
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, syscall.SIGINT, syscall.SIGTERM)
 	<-s
