@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"os"
 
-
+	"github.com/msrevive/sylphiel/cmd"
+	"github.com/msrevive/sylphiel/internal/system"
 )
 
 var spMsg string = `
-Sylphiel - Discord semi-useful bot for MSRebirth.
+Sylphiel (Syl-phe-iel).
 
 Copyright © %d, Team MSRebirth
 Version: %s

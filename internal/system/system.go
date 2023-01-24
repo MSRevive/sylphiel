@@ -2,7 +2,7 @@ package system
 
 import (
 	"os"
-	"filepath"
+	"path/filepath"
 	"errors"
 
 	"gopkg.in/ini.v1"

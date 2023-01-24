@@ -1,8 +1,15 @@
 package cmd
 
 import (
+	"os"
+	"time"
+	"runtime"
 	"flag"
 	"context"
+	"fmt"
+	"io"
+	"syscall"
+	"os/signal"
 
 	"github.com/msrevive/sylphiel/internal/system"
 
@@ -79,26 +86,28 @@ func Run(args []string) error {
 		runtime.GOMAXPROCS(config.Core.MaxThreads)
 	}
 
-	logCore.Printf("Initiating Disgo (%d)...", disgo.Version)
+	logCore.Printf("Initiating Disgo (%s)...", disgo.Version)
 	client, err := disgo.New(config.Core.Token,
 		bot.WithGatewayConfigOpts(
 			gateway.WithIntents(
 				gateway.IntentGuilds,
-				gateway.IntentGuildMessages
-			)
-		)
+				gateway.IntentGuildMessages,
+			),
+		),
 	)
 	if err != nil {
 		return err
 	}
 
+	fmt.Println("\nBot is now running. Press CTRL-C to exit.\n")
 	defer client.Close(context.TODO())
-	if err = client.Open(context.TODO()); err != nil {
+	if err = client.OpenGateway(context.TODO()); err != nil {
 		return err
 	}
 
-	logCore.Println("Bot is now running. Press CTRL-C to exit.")
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, syscall.SIGINT, syscall.SIGTERM)
 	<-s
+
+	return nil
 }
