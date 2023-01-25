@@ -12,21 +12,26 @@ import (
 	"os/signal"
 
 	"github.com/msrevive/sylphiel/internal/system"
+	"github.com/msrevive/sylphiel/internal/events"
+	"github.com/msrevive/sylphiel/internal/commands"
 
 	"github.com/disgoorg/disgo"
 	"github.com/disgoorg/disgo/bot"
 	"github.com/disgoorg/disgo/gateway"
+	"github.com/disgoorg/disgo/cache"
+	"github.com/disgoorg/disgo/handler"
 	"github.com/saintwish/auralog"
 )
 
 var (
 	logCore *auralog.Logger // Logs for core/server
-	logAPI *auralog.Logger // Logs for endpoints/middleware
+	logDisc *auralog.Logger // Logs for Discord
 )
 
 type flags struct {
 	configFile string
 	debug bool
+	syncCommands bool
 }
 
 func doFlags(args []string) *flags {
@@ -35,6 +40,7 @@ func doFlags(args []string) *flags {
 	flagSet := flag.NewFlagSet(args[0], flag.ContinueOnError)
 	flagSet.StringVar(&flgs.configFile, "cfile", "./runtime/config.yaml", "Location of via config file")
 	flagSet.BoolVar(&flgs.debug, "d", false, "Run with debug mode.")
+	flagSet.BoolVar(&flgs.syncCommands, "s", false, "Sync commands with all servers.")
 	flagSet.Parse(args[1:])
 
 	return flgs
@@ -57,6 +63,16 @@ func initLoggers(filename string, dir string, level string, expire string) {
 	logCore = auralog.New(auralog.Config{
 		Output: io.MultiWriter(os.Stdout, file),
 		Prefix: "[CORE] ",
+		Level: auralog.ToLogLevel(level),
+		Flag: flags,
+		WarnFlag: flagsWarn,
+		ErrorFlag: flagsError,
+		DebugFlag: flagsDebug,
+	})
+
+	logDisc = auralog.New(auralog.Config{
+		Output: io.MultiWriter(os.Stdout, file),
+		Prefix: "[DISC] ",
 		Level: auralog.ToLogLevel(level),
 		Flag: flags,
 		WarnFlag: flagsWarn,
@@ -94,17 +110,33 @@ func Run(args []string) error {
 				gateway.IntentGuildMessages,
 			),
 		),
+		bot.WithCacheConfigOpts(cache.WithCaches(cache.FlagGuilds)),
+		bot.WithEventListenerFunc(events.ApplicationCommands),
+		//bot.WithLogger(logDisc),
 	)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("\nBot is now running. Press CTRL-C to exit.\n")
+	logDisc.Print("Registering slash commands...")
+	handle := handler.New()
+	handle.HandleCommand("/ping", commands.PingHandler)
+
+	if (flgs.syncCommands) {
+		logDisc.Print("Syncing global application commads...")
+		_,err := client.Rest().SetGlobalCommands(client.ApplicationID(), commands.Commands)
+
+		if (err != nil) {
+			logDisc.Errorf("Failed to sync commands: %s", err)
+		}
+	}
+
 	defer client.Close(context.TODO())
 	if err = client.OpenGateway(context.TODO()); err != nil {
 		return err
 	}
 
+	fmt.Println("\nBot is now running. Press CTRL-C to exit.\n")
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, syscall.SIGINT, syscall.SIGTERM)
 	<-s
