@@ -1,7 +1,7 @@
 package events
 
 import (
-	"fmt"
+	//"fmt"
 
 	"github.com/msrevive/sylphiel/cmd/dbot"
 
@@ -22,10 +22,9 @@ func OnReady(b *dbot.Bot) bot.EventListener {
 func GuildMemberJoin(b *dbot.Bot) bot.EventListener {
 	return bot.NewListenerFunc(func(e *events.GuildMemberJoin) {
 		b.Logger.Debug("GuildMemberJoin event called")
-		if e.GuildID == b.Config.Discord.GuildID {
-			if b.Config.Discord.DefaultRole != 0 && !e.Member.User.Bot {
-				e.Client().Rest().AddMemberRole(e.GuildID, e.Member.User.ID, b.Config.Discord.DefaultRole)
-				fmt.Println("AddMemberGuild")
+		if e.GuildID == b.Config.Disc.GuildID {
+			if b.Config.Disc.DefaultRole != 0 && !e.Member.User.Bot {
+				e.Client().Rest().AddMemberRole(e.GuildID, e.Member.User.ID, b.Config.Disc.DefaultRole)
 			}
 		}
 	})
