@@ -7,8 +7,8 @@ import (
 	"github.com/disgoorg/disgo"
 	"github.com/disgoorg/disgo/bot"
 	"github.com/disgoorg/disgo/handler"
-	"github.com/disgoorg/disgo/discord"
 	"github.com/disgoorg/disgo/gateway"
+	"github.com/disgoorg/disgo/discord"
 	"github.com/disgoorg/disgo/cache"
 )
 
@@ -41,6 +41,11 @@ func (b *Bot) Setup(listeners ...bot.EventListener) (err error) {
 			gateway.WithIntents(
 				gateway.IntentGuilds,
 				gateway.IntentGuildMessages,
+				gateway.IntentGuildModeration,
+				gateway.IntentGuildMembers,
+				gateway.IntentGuildWebhooks,
+				gateway.IntentGuildIntegrations,
+				gateway.IntentMessageContent,
 			),
 		),
 		bot.WithCacheConfigOpts(
@@ -54,6 +59,7 @@ func (b *Bot) Setup(listeners ...bot.EventListener) (err error) {
 				return member.User.ID == b.Client.ID()
 			}),
 		),
+		bot.WithLogger(b.Logger),
 		bot.WithEventListeners(listeners...),
 	)
 

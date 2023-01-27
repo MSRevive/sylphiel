@@ -8,6 +8,13 @@ import (
 var ping = discord.SlashCommandCreate {
 	Name: "ping",
 	Description: "Ping command",
+	Options: []discord.ApplicationCommandOption {
+		discord.ApplicationCommandOptionBool{
+			Name: "ephemeral",
+			Description: "If the response should only be visible to you",
+			Required: true,
+		},
+	},
 }
 
 func PingHandler(e *handler.CommandEvent) error {

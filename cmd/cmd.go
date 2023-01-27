@@ -13,6 +13,7 @@ import (
 	
 	"github.com/msrevive/sylphiel/cmd/dbot"
 	"github.com/msrevive/sylphiel/internal/events"
+	"github.com/msrevive/sylphiel/internal/commands"
 
 	"github.com/saintwish/auralog"
 )
@@ -99,8 +100,13 @@ func Run(args []string) error {
 
 	logCore.Println("Initiating Bot...")
 	b := dbot.New(context.TODO(), logDisc, config)
+
+	b.Handler.HandleCommand("/ping", commands.PingHandler)
+
 	if err := b.Setup(
+		b.Handler,
 		events.OnReady(b),
+		events.GuildMemberJoin(b),
 	); err != nil {
 		return err
 	}
@@ -110,6 +116,10 @@ func Run(args []string) error {
 		return err
 	}
 	defer b.Client.Close(b.Ctx)
+
+	if _, err = b.Client.Rest().SetGuildCommands(b.Client.ApplicationID(), b.Config.Discord.GuildID, commands.Commands); err != nil {
+		logDisc.Fatalf("error while setting global commands: ", err)
+	}
 
 	fmt.Println("\nBot is now running. Press CTRL-C to exit.\n")
 	s := make(chan os.Signal, 1)
