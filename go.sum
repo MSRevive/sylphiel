@@ -16,6 +16,8 @@ github.com/saintwish/auralog v1.0.3 h1:+qikaPbSyqtgJh7/uJDYsbKo+VctTq/FxsWnHUwfj
 github.com/saintwish/auralog v1.0.3/go.mod h1:5GSGzCizWT5qenUpVl1Yp6439L4QLTvB5WfhC6j6S8k=
 github.com/saintwish/auralog v1.0.4 h1:FDLK/XThg5M6wBzwGuhtLO5xNdPZdbnCGF+i18qXcfo=
 github.com/saintwish/auralog v1.0.4/go.mod h1:5GSGzCizWT5qenUpVl1Yp6439L4QLTvB5WfhC6j6S8k=
+github.com/saintwish/auralog v1.0.5 h1:VpP2zNeIwidWIjWO/uVpNYWILQRQ5Kin6R1yCRtVp0M=
+github.com/saintwish/auralog v1.0.5/go.mod h1:5GSGzCizWT5qenUpVl1Yp6439L4QLTvB5WfhC6j6S8k=
 github.com/sasha-s/go-csync v0.0.0-20210812194225-61421b77c44b h1:qYTY2tN72LhgDj2rtWG+LI6TXFl2ygFQQ4YezfVaGQE=
 github.com/sasha-s/go-csync v0.0.0-20210812194225-61421b77c44b/go.mod h1:/pA7k3zsXKdjjAiUhB5CjuKib9KJGCaLvZwtxGC8U0s=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=

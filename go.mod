@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/disgoorg/disgo v0.15.0
-	github.com/saintwish/auralog v1.0.4
+	github.com/saintwish/auralog v1.0.5
 	gopkg.in/ini.v1 v1.67.0
 	gopkg.in/yaml.v2 v2.4.0
 )
