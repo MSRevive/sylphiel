@@ -17,7 +17,9 @@ type Config struct {
 		DebugMode bool
 	}
 	Discord struct {
+		GuildID snowflake.ID
 		DevChannel snowflake.ID
+		DefaultRole snowflake.ID
 	}
 	Log struct {
 		Level string
