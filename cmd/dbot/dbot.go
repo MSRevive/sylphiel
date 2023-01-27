@@ -10,6 +10,7 @@ import (
 	"github.com/disgoorg/disgo/gateway"
 	"github.com/disgoorg/disgo/discord"
 	"github.com/disgoorg/disgo/cache"
+	"github.com/disgoorg/disgo/webhook"
 )
 
 var (
@@ -17,13 +18,12 @@ var (
 )
 
 type Bot struct {
-	Ctx context.Context
-
 	Client bot.Client
 	Handler handler.Router
-
+	Webhook webhook.Client
 	Logger log.Logger
 	Config *Config
+	Ctx context.Context
 }
 
 func New(ctx context.Context, logger log.Logger, cfg *Config) *Bot {
@@ -67,5 +67,15 @@ func (b *Bot) Setup(listeners ...bot.EventListener) (err error) {
 }
 
 func (b *Bot) Start() error {
+	if (b.Config.Webhook.Enabled) {
+		b.Logger.Info("Events logging enabled.")
+		b.Webhook = webhook.New(b.Config.Webhook.ID, b.Config.Webhook.Token)
+	}
+
 	return b.Client.OpenGateway(b.Ctx);
+}
+
+func (b *Bot) Close() {
+	b.Webhook.Close(context.TODO())
+	b.Client.Close(b.Ctx)
 }

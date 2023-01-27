@@ -16,10 +16,15 @@ type Config struct {
 		MaxThreads int
 		DebugMode bool
 	}
-	Discord struct {
+	Disc struct {
 		GuildID snowflake.ID
 		DevChannel snowflake.ID
 		DefaultRole snowflake.ID
+	}
+	Webhook struct {
+		Enabled bool
+		ID snowflake.ID
+		Token string
 	}
 	Log struct {
 		Level string

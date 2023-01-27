@@ -1,10 +1,14 @@
 core:
   token: "" # Discord token
   maxthreads: 0 # Max threads app is allowed to use
-discord:
+disc:
   guildid: 0 # The Discord Server ID that bot is operating on.
   devchannel: 0 # Testing channel
   defaultrole: 0 # Role to give users upon joining.
+webhooks:
+  Enabled: false # Enable logging by via webhook.
+  id: 0 # Webhook ID for logging
+  token: "" # Webhook token for logging
 log:
   level: debug # Log level
   dir: ./runtime/logs/ # Where should we keep the bot log file.
