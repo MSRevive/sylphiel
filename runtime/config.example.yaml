@@ -1,0 +1,9 @@
+core:
+  token: "" # Discord token
+  maxthreads: 0 # Max threads app is allowed to use
+discord:
+  devchannel: 0 # Testing channel
+log:
+  level: debug # Log level
+  dir: ./runtime/logs/ # Where should we keep the bot log file.
+  expiretime: 24h # How long before logs should be considered old.
