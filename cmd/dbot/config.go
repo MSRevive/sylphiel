@@ -29,6 +29,10 @@ type Config struct {
 func LoadConfig(path string, dbg bool) (*Config, error) {
 	var cfg Config
 
+	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
+		return nil, os.ErrNotExist
+	}
+
 	switch filepath.Ext(path) {
 	case ".toml", ".ini":
 		if err := ini.MapTo(&cfg, path); err != nil {
