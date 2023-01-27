@@ -99,7 +99,8 @@ func Run(args []string) error {
 	}
 
 	logCore.Println("Initiating Bot...")
-	b := dbot.New(context.TODO(), logDisc, config)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	b := dbot.New(ctx, logDisc, config)
 
 	b.Handler.HandleCommand("/ping", commands.PingHandler)
 
@@ -115,11 +116,15 @@ func Run(args []string) error {
 	if err := b.Start(); err != nil {
 		return err
 	}
-	defer b.Client.Close(b.Ctx)
 
-	if _, err = b.Client.Rest().SetGuildCommands(b.Client.ApplicationID(), b.Config.Discord.GuildID, commands.Commands); err != nil {
+	if _, err = b.Client.Rest().SetGuildCommands(b.Client.ApplicationID(), b.Config.Disc.GuildID, commands.Commands); err != nil {
 		logDisc.Fatalf("error while setting global commands: ", err)
 	}
+
+	defer func() {
+		b.Close()
+		cancel()
+	}()
 
 	fmt.Println("\nBot is now running. Press CTRL-C to exit.\n")
 	s := make(chan os.Signal, 1)
