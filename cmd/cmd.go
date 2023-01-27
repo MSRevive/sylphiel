@@ -85,6 +85,7 @@ func Run(args []string) error {
 	fmt.Println("Loading config file...")
 	config, err := dbot.LoadConfig(flgs.configFile, flgs.debug)
 	if err != nil {
+		fmt.Printf("Failed to load config: %s", flgs.configFile)
 		return err
 	}
 	

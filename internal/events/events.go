@@ -5,7 +5,7 @@ import (
 
 	"github.com/disgoorg/disgo/events"
 	"github.com/disgoorg/disgo/bot"
-	"github.com/disgoorg/disgo/discord"
+	//"github.com/disgoorg/disgo/discord"
 )
 
 func OnReady(b *dbot.Bot) bot.EventListener {
