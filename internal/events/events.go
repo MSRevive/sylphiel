@@ -1,37 +1,17 @@
 package events
 
 import (
+	"github.com/msrevive/sylphiel/cmd/dbot"
+
 	"github.com/disgoorg/disgo/events"
+	"github.com/disgoorg/disgo/bot"
+	"github.com/disgoorg/disgo/discord"
 )
 
-func ApplicationCommands(event *events.ApplicationCommandInteractionCreate) {
-
-}
-
-func MessageCreate(event *events.MessageCreate) {
-
-}
-
-func MessageUpdate(event *events.MessageUpdate) {
-
-}
-
-func MessageDelete(event *events.MessageDelete) {
-
-}
-
-func OnReady(event *events.Ready) {
-
-}
-
-func GuildUpdate(event *events.GuildUpdate) {
-
-}
-
-func GuildBan(event *events.GuildBan) {
-
-}
-
-func GuildUnban(event *events.GuildUnban) {
-	
+func OnReady(b *dbot.Bot) bot.EventListener {
+	/*return bot.NewListenerFunc(func(e *events.Ready) {
+		e.Client().Rest().CreateMessage(b.Config.Discord.DevChannel, discord.NewMessageCreateBuilder().SetContent("Bot loaded.").Build())
+	})*/
+	return bot.NewListenerFunc(func(e *events.Ready) {
+	})
 }

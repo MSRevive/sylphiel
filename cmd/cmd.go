@@ -10,16 +10,10 @@ import (
 	"io"
 	"syscall"
 	"os/signal"
-
-	"github.com/msrevive/sylphiel/internal/system"
+	
+	"github.com/msrevive/sylphiel/cmd/dbot"
 	"github.com/msrevive/sylphiel/internal/events"
-	"github.com/msrevive/sylphiel/internal/commands"
 
-	"github.com/disgoorg/disgo"
-	"github.com/disgoorg/disgo/bot"
-	"github.com/disgoorg/disgo/gateway"
-	"github.com/disgoorg/disgo/cache"
-	"github.com/disgoorg/disgo/handler"
 	"github.com/saintwish/auralog"
 )
 
@@ -89,11 +83,11 @@ func Run(args []string) error {
 	}
 
 	fmt.Println("Loading config file...")
-	config, err := system.LoadConfig(flgs.configFile, flgs.debug)
+	config, err := dbot.LoadConfig(flgs.configFile, flgs.debug)
 	if err != nil {
 		return err
 	}
-
+	
 	fmt.Println("Initiating Loggers...")
 	initLoggers("server.log", config.Log.Dir, config.Log.Level, config.Log.ExpireTime)
 
@@ -102,39 +96,19 @@ func Run(args []string) error {
 		runtime.GOMAXPROCS(config.Core.MaxThreads)
 	}
 
-	logCore.Printf("Initiating Disgo (%s)...", disgo.Version)
-	client, err := disgo.New(config.Core.Token,
-		bot.WithGatewayConfigOpts(
-			gateway.WithIntents(
-				gateway.IntentGuilds,
-				gateway.IntentGuildMessages,
-			),
-		),
-		bot.WithCacheConfigOpts(cache.WithCaches(cache.FlagGuilds)),
-		bot.WithEventListenerFunc(events.ApplicationCommands),
-		//bot.WithLogger(logDisc),
-	)
-	if err != nil {
+	logCore.Println("Initiating Bot...")
+	b := dbot.New(context.TODO(), logDisc, config)
+	if err := b.Setup(
+		events.OnReady(b),
+	); err != nil {
 		return err
 	}
 
-	logDisc.Print("Registering slash commands...")
-	handle := handler.New()
-	handle.HandleCommand("/ping", commands.PingHandler)
-
-	if (flgs.syncCommands) {
-		logDisc.Print("Syncing global application commads...")
-		_,err := client.Rest().SetGlobalCommands(client.ApplicationID(), commands.Commands)
-
-		if (err != nil) {
-			logDisc.Errorf("Failed to sync commands: %s", err)
-		}
-	}
-
-	defer client.Close(context.TODO())
-	if err = client.OpenGateway(context.TODO()); err != nil {
+	logCore.Println("Connecting to Discord gateway...")
+	if err := b.Start(); err != nil {
 		return err
 	}
+	defer b.Client.Close(b.Ctx)
 
 	fmt.Println("\nBot is now running. Press CTRL-C to exit.\n")
 	s := make(chan os.Signal, 1)
