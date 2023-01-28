@@ -4,6 +4,7 @@ import (
 	//"fmt"
 
 	"github.com/msrevive/sylphiel/cmd/dbot"
+	"github.com/msrevive/sylphiel/internal/response"
 
 	"github.com/disgoorg/disgo/events"
 	"github.com/disgoorg/disgo/bot"
@@ -25,6 +26,49 @@ func GuildMemberJoin(b *dbot.Bot) bot.EventListener {
 		if e.GuildID == b.Config.Disc.GuildID {
 			if b.Config.Disc.DefaultRole != 0 && !e.Member.User.Bot {
 				e.Client().Rest().AddMemberRole(e.GuildID, e.Member.User.ID, b.Config.Disc.DefaultRole)
+
+				err := response.AuditMemberJoined(b.Webhook, e)
+				if err != nil {
+					b.Logger.Error(err)
+				}
+			}
+		}
+	})
+}
+
+func GuildMemberLeave(b *dbot.Bot) bot.EventListener {
+	return bot.NewListenerFunc(func(e *events.GuildMemberLeave) {
+		b.Logger.Debug("GuildMemberLeave event called")
+		if e.GuildID == b.Config.Disc.GuildID {
+			if !e.Member.User.Bot {
+				err := response.AuditMemberLeft(b.Webhook, e)
+				if err != nil {
+					b.Logger.Error(err)
+				}
+			}
+		}
+	})
+}
+
+func GuildVoiceJoin(b *dbot.Bot) bot.EventListener {
+	return bot.NewListenerFunc(func(e *events.GuildVoiceJoin) {
+		b.Logger.Debug("GuildVoiceJoin event called")
+		if e.GuildID == b.Config.Disc.GuildID {
+			err := response.AuditVoiceJoined(b.Webhook, e)
+			if err != nil {
+				b.Logger.Error(err)
+			}
+		}
+	})
+}
+
+func GuildVoiceLeave(b *dbot.Bot) bot.EventListener {
+	return bot.NewListenerFunc(func(e *events.GuildVoiceLeave) {
+		b.Logger.Debug("GuildVoiceLeave event called")
+		if e.GuildID == b.Config.Disc.GuildID {
+			err := response.AuditVoiceLeft(b.Webhook, e)
+			if err != nil {
+				b.Logger.Error(err)
 			}
 		}
 	})

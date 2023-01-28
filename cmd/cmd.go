@@ -108,6 +108,7 @@ func Run(args []string) error {
 		b.Handler,
 		events.OnReady(b),
 		events.GuildMemberJoin(b),
+		events.GuildMemberLeave(b),
 	); err != nil {
 		return err
 	}
