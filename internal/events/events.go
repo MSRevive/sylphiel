@@ -70,3 +70,22 @@ func GuildVoiceLeave(b *dbot.Bot) bot.EventListener {
 	})
 }
 
+func MessageDelete(b *dbot.Bot) bot.EventListener {
+	return bot.NewListenerFunc(func(e *events.MessageDelete) {
+		b.Logger.Debug("MessageDelete event called")
+		err := response.AuditMessageDelete(b.Webhook, e)
+		if err != nil {
+			b.Logger.Error(err)
+		}
+	})
+}
+
+func MessageUpdate(b *dbot.Bot) bot.EventListener {
+	return bot.NewListenerFunc(func(e *events.MessageUpdate) {
+		b.Logger.Debug("MessageUpdate event called")
+		err := response.AuditMessageUpdate(b.Webhook, e)
+		if err != nil {
+			b.Logger.Error(err)
+		}
+	})
+}

@@ -9,6 +9,11 @@ import (
 	"github.com/disgoorg/disgo/events"
 )
 
+var (
+	colorGreen int = 0x009999
+	colorRed int = 0xcc0000
+)
+
 func AuditTest(c webhook.Client, e *events.Ready) error {
 	embeds := make([]discord.Embed, 1)
 	embeds[0] = discord.NewEmbedBuilder().
@@ -39,7 +44,7 @@ func AuditMemberJoined(c webhook.Client, a *events.GuildMemberJoin) error {
 
 	embeds := make([]discord.Embed, 1)
 	embeds[0] = discord.NewEmbedBuilder().
-	SetColor(0x009999).
+	SetColor(colorGreen).
 	SetTimestamp(time.Now()).
 	SetAuthorIcon(userAvatar).
 	SetAuthorName(userName).
@@ -67,7 +72,7 @@ func AuditMemberLeft(c webhook.Client, a *events.GuildMemberLeave) error {
 
 	embeds := make([]discord.Embed, 1)
 	embeds[0] = discord.NewEmbedBuilder().
-	SetColor(0xcc0000).
+	SetColor(colorRed).
 	SetTimestamp(time.Now()).
 	SetAuthorIcon(userAvatar).
 	SetAuthorName(userName).
@@ -102,7 +107,7 @@ func AuditVoiceJoined(c webhook.Client, a *events.GuildVoiceJoin) error {
 
 	embeds := make([]discord.Embed, 1)
 	embeds[0] = discord.NewEmbedBuilder().
-	SetColor(0x009999).
+	SetColor(colorGreen).
 	SetTimestamp(time.Now()).
 	SetAuthorIcon(userAvatar).
 	SetAuthorName(userName).
@@ -137,12 +142,70 @@ func AuditVoiceLeft(c webhook.Client, a *events.GuildVoiceLeave) error {
 
 	embeds := make([]discord.Embed, 1)
 	embeds[0] = discord.NewEmbedBuilder().
-	SetColor(0xcc0000).
+	SetColor(colorRed).
 	SetTimestamp(time.Now()).
 	SetAuthorIcon(userAvatar).
 	SetAuthorName(userName).
 	SetTitle("Left Voice Channel").
 	SetDescription(desc).
+	SetFooterText(userID).
+	Build()
+
+	_, err := c.CreateEmbeds(embeds)
+
+	return err
+}
+
+func AuditMessageDelete(c webhook.Client, a *events.MessageDelete) error {
+	var userAvatar string
+	userName := fmt.Sprintf("%s#%s", a.Message.Member.User.Username, a.Message.Member.User.Discriminator)
+	userID := fmt.Sprintf("%s", a.Message.Member.User.ID)
+	desc := a.Message.Content
+
+	if a.Message.Member.Avatar == nil {
+		userAvatar = "https://winterfang.com/assets/gfx/bot-avatar.png"
+	}else{
+		userAvatar = fmt.Sprintf("%s", a.Message.Member.AvatarURL())
+	}
+
+	embeds := make([]discord.Embed, 1)
+	embeds[0] = discord.NewEmbedBuilder().
+	SetColor(colorRed).
+	SetTimestamp(time.Now()).
+	SetAuthorIcon(userAvatar).
+	SetAuthorName(userName).
+	SetTitle("Deleted Message").
+	SetDescription(desc).
+	SetFooterText(userID).
+	Build()
+
+	_, err := c.CreateEmbeds(embeds)
+
+	return err
+}
+
+func AuditMessageUpdate(c webhook.Client, a *events.MessageUpdate) error {
+	var userAvatar string
+	userName := fmt.Sprintf("%s#%s", a.Message.Member.User.Username, a.Message.Member.User.Discriminator)
+	userID := fmt.Sprintf("%s", a.Message.Member.User.ID)
+	oldMsg := a.OldMessage.Content
+	newMsg := a.Message.Content
+
+	if a.Message.Member.Avatar == nil {
+		userAvatar = "https://winterfang.com/assets/gfx/bot-avatar.png"
+	}else{
+		userAvatar = fmt.Sprintf("%s", a.Message.Member.AvatarURL())
+	}
+
+	embeds := make([]discord.Embed, 1)
+	embeds[0] = discord.NewEmbedBuilder().
+	SetColor(colorGreen).
+	SetTimestamp(time.Now()).
+	SetAuthorIcon(userAvatar).
+	SetAuthorName(userName).
+	SetTitle("Updated Message").
+	AddField("Old", oldMsg, false).
+	AddField("New", newMsg, false).
 	SetFooterText(userID).
 	Build()
 
