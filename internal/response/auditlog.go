@@ -85,8 +85,14 @@ func AuditVoiceJoined(c webhook.Client, a *events.GuildVoiceJoin) error {
 	var userAvatar string
 	userName := fmt.Sprintf("%s#%s", a.Member.User.Username, a.Member.User.Discriminator)
 	userID := fmt.Sprintf("%s", a.Member.User.ID)
-	chanID := &a.VoiceState.ChannelID
-	desc := fmt.Sprintf("%s joined %s", userName, discord.ChannelMention(chanID))
+	var desc string
+
+	if a.VoiceState.ChannelID == nil {
+		desc = fmt.Sprintf("%s left %s", userName, "unknown channel")
+	}else{
+		chanID := *a.VoiceState.ChannelID
+		desc = fmt.Sprintf("%s left %s", userName, discord.ChannelMention(chanID))
+	}
 
 	if a.Member.Avatar == nil {
 		userAvatar = "https://winterfang.com/assets/gfx/bot-avatar.png"
@@ -114,9 +120,15 @@ func AuditVoiceLeft(c webhook.Client, a *events.GuildVoiceLeave) error {
 	var userAvatar string
 	userName := fmt.Sprintf("%s#%s", a.Member.User.Username, a.Member.User.Discriminator)
 	userID := fmt.Sprintf("%s", a.Member.User.ID)
-	chanID := &a.VoiceState.ChannelID
-	desc := fmt.Sprintf("%s left %s", userName, discord.ChannelMention(chanID))
+	var desc string
 	
+	if a.VoiceState.ChannelID == nil {
+		desc = fmt.Sprintf("%s left %s", userName, "unknown channel")
+	}else{
+		chanID := *a.VoiceState.ChannelID
+		desc = fmt.Sprintf("%s left %s", userName, discord.ChannelMention(chanID))
+	}
+
 	if a.Member.Avatar == nil {
 		userAvatar = "https://winterfang.com/assets/gfx/bot-avatar.png"
 	}else{

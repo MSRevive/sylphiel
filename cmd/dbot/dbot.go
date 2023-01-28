@@ -41,12 +41,12 @@ func (b *Bot) Setup(listeners ...bot.EventListener) (err error) {
 			gateway.WithIntents(
 				gateway.IntentGuilds,
 				gateway.IntentGuildMessages,
+				gateway.IntentGuildVoiceStates,
 				gateway.IntentGuildModeration,
 				gateway.IntentGuildMembers,
 				gateway.IntentGuildWebhooks,
 				gateway.IntentGuildIntegrations,
 				gateway.IntentMessageContent,
-				gateway.IntentGuildVoiceStates,
 			),
 		),
 		bot.WithCacheConfigOpts(
@@ -55,6 +55,7 @@ func (b *Bot) Setup(listeners ...bot.EventListener) (err error) {
 				cache.FlagChannels, 
 				cache.FlagGuilds, 
 				cache.FlagRoles,
+				cache.FlagVoiceStates,
 			),
 			cache.WithMemberCachePolicy(func(member discord.Member) bool {
 				return member.User.ID == b.Client.ID()

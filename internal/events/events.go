@@ -53,11 +53,9 @@ func GuildMemberLeave(b *dbot.Bot) bot.EventListener {
 func GuildVoiceJoin(b *dbot.Bot) bot.EventListener {
 	return bot.NewListenerFunc(func(e *events.GuildVoiceJoin) {
 		b.Logger.Debug("GuildVoiceJoin event called")
-		if e.GuildID == b.Config.Disc.GuildID {
-			err := response.AuditVoiceJoined(b.Webhook, e)
-			if err != nil {
-				b.Logger.Error(err)
-			}
+		err := response.AuditVoiceJoined(b.Webhook, e)
+		if err != nil {
+			b.Logger.Error(err)
 		}
 	})
 }
@@ -65,11 +63,10 @@ func GuildVoiceJoin(b *dbot.Bot) bot.EventListener {
 func GuildVoiceLeave(b *dbot.Bot) bot.EventListener {
 	return bot.NewListenerFunc(func(e *events.GuildVoiceLeave) {
 		b.Logger.Debug("GuildVoiceLeave event called")
-		if e.GuildID == b.Config.Disc.GuildID {
-			err := response.AuditVoiceLeft(b.Webhook, e)
-			if err != nil {
-				b.Logger.Error(err)
-			}
+		err := response.AuditVoiceLeft(b.Webhook, e)
+		if err != nil {
+			b.Logger.Error(err)
 		}
 	})
 }
+
