@@ -6,4 +6,5 @@ import (
 
 var Commands = []discord.ApplicationCommandCreate {
 	ping,
+	restore,
 }

@@ -102,15 +102,13 @@ func Run(args []string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	b := dbot.New(ctx, logDisc, config)
 
+	logCore.Println("Adding commands...")
 	b.Handler.HandleCommand("/ping", commands.PingHandler)
+	b.Handler.HandleCommand("/restore", commands.RestoreHandler)
 
 	if err := b.Setup(
 		b.Handler,
 		events.OnReady(b),
-		events.GuildMemberJoin(b),
-		events.GuildMemberLeave(b),
-		events.GuildVoiceJoin(b),
-		events.GuildVoiceLeave(b),
 	); err != nil {
 		return err
 	}

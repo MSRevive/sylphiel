@@ -14,12 +14,10 @@ type Config struct {
 	Core struct {
 		Token string
 		MaxThreads int
-		DebugMode bool
 	}
 	Disc struct {
 		GuildID snowflake.ID
 		DevChannel snowflake.ID
-		DefaultRole snowflake.ID
 	}
 	Webhook struct {
 		Enabled bool
@@ -30,6 +28,10 @@ type Config struct {
 		Level string
 		Dir string
 		ExpireTime string
+	}
+	FuzzNet struct {
+		Domain string
+		APIKey string
 	}
 }
 
@@ -60,6 +62,5 @@ func LoadConfig(path string, dbg bool) (*Config, error) {
 		return nil, errors.New("unsupported config type")
 	}
 
-	cfg.Core.DebugMode = dbg
 	return &cfg, nil
 }

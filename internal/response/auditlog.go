@@ -158,14 +158,14 @@ func AuditVoiceLeft(c webhook.Client, a *events.GuildVoiceLeave) error {
 
 func AuditMessageDelete(c webhook.Client, a *events.MessageDelete) error {
 	var userAvatar string
-	userName := fmt.Sprintf("%s#%s", a.Message.Member.User.Username, a.Message.Member.User.Discriminator)
-	userID := fmt.Sprintf("%s", a.Message.Member.User.ID)
+	userName := fmt.Sprintf("%s#%s", a.Message.Author.Username, a.Message.Author.Discriminator)
+	userID := fmt.Sprintf("%s", a.Message.Author.ID)
 	desc := a.Message.Content
 
-	if a.Message.Member.Avatar == nil {
+	if a.Message.Author.AvatarURL() == nil {
 		userAvatar = "https://winterfang.com/assets/gfx/bot-avatar.png"
 	}else{
-		userAvatar = fmt.Sprintf("%s", a.Message.Member.AvatarURL())
+		userAvatar = fmt.Sprintf("%s", a.Message.Author.AvatarURL())
 	}
 
 	embeds := make([]discord.Embed, 1)
@@ -186,15 +186,15 @@ func AuditMessageDelete(c webhook.Client, a *events.MessageDelete) error {
 
 func AuditMessageUpdate(c webhook.Client, a *events.MessageUpdate) error {
 	var userAvatar string
-	userName := fmt.Sprintf("%s#%s", a.Message.Member.User.Username, a.Message.Member.User.Discriminator)
-	userID := fmt.Sprintf("%s", a.Message.Member.User.ID)
+	userName := fmt.Sprintf("%s#%s", a.Message.Author.Username, a.Message.Author.Discriminator)
+	userID := fmt.Sprintf("%s", a.Message.Author.ID)
 	oldMsg := a.OldMessage.Content
 	newMsg := a.Message.Content
 
-	if a.Message.Member.Avatar == nil {
+	if a.Message.Author.AvatarURL() == nil {
 		userAvatar = "https://winterfang.com/assets/gfx/bot-avatar.png"
 	}else{
-		userAvatar = fmt.Sprintf("%s", a.Message.Member.AvatarURL())
+		userAvatar = fmt.Sprintf("%s", a.Message.Author.AvatarURL())
 	}
 
 	embeds := make([]discord.Embed, 1)

@@ -50,13 +50,14 @@ func (b *Bot) Setup(listeners ...bot.EventListener) (err error) {
 			),
 		),
 		bot.WithCacheConfigOpts(
-			cache.WithCaches(
-				cache.FlagMembers, 
-				cache.FlagChannels, 
-				cache.FlagGuilds, 
-				cache.FlagRoles,
-				cache.FlagVoiceStates,
-			),
+			cache.WithCaches(cache.FlagsAll),
+			// cache.WithCaches(
+			// 	cache.FlagMembers, 
+			// 	cache.FlagChannels, 
+			// 	cache.FlagGuilds, 
+			// 	cache.FlagRoles,
+			// 	cache.FlagVoiceStates,
+			// ),
 			cache.WithMemberCachePolicy(func(member discord.Member) bool {
 				return member.User.ID == b.Client.ID()
 			}),
