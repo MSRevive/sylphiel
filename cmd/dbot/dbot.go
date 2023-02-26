@@ -3,6 +3,8 @@ package dbot
 import (
 	"context"
 
+	"github.com/msrevive/sylphiel/internal/commands"
+
 	"github.com/disgoorg/log"
 	"github.com/disgoorg/disgo"
 	"github.com/disgoorg/disgo/bot"
@@ -67,6 +69,34 @@ func (b *Bot) Setup(listeners ...bot.EventListener) (err error) {
 	)
 
 	return err
+}
+
+func (b *Bot) SetupCommandHandlers() {
+	b.Handler.HandleCommand("/ping", commands.PingHandler)
+	b.Handler.HandleCommand("/restore", commands.RestoreHandler)
+}
+
+func (b *Bot) SyncCommands() {
+	if b.Config.Disc.GuildID.String() == "" {
+		b.Logger.Info("Syncing commands globally...");
+		if _, err := b.Client.Rest().SetGlobalCommands(b.Client.ApplicationID(), commands.Commands); err != nil {
+			b.Logger.Errorf("Failed to sync commands: %s", err)
+		}
+		return
+	}
+
+	b.Logger.Info("Syncing commands with guild: %s...", b.Config.Disc.GuildID);
+	if _, err := b.Client.Rest().SetGuildCommands(b.Client.ApplicationID(), b.Config.Disc.GuildID, commands.Commands); err != nil {
+		b.Logger.Errorf("Failed to sync commands: %s", err)
+	}
+
+	if err := b.Client.Rest().DeleteGlobalCommand(b.Client.ApplicationID(), 1067673174449340418); err != nil {
+		b.Logger.Errorf("Failed to sync commands: %s", err)
+	}
+
+	if err := b.Client.Rest().DeleteGlobalCommand(b.Client.ApplicationID(), 1079171151831498762); err != nil {
+		b.Logger.Errorf("Failed to sync commands: %s", err)
+	}
 }
 
 func (b *Bot) Start() error {

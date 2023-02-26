@@ -13,7 +13,6 @@ import (
 	
 	"github.com/msrevive/sylphiel/cmd/dbot"
 	"github.com/msrevive/sylphiel/internal/events"
-	"github.com/msrevive/sylphiel/internal/commands"
 
 	"github.com/saintwish/auralog"
 )
@@ -102,9 +101,8 @@ func Run(args []string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	b := dbot.New(ctx, logDisc, config)
 
-	logCore.Println("Adding commands...")
-	b.Handler.HandleCommand("/ping", commands.PingHandler)
-	b.Handler.HandleCommand("/restore", commands.RestoreHandler)
+	logCore.Println("Setting command handlers...")
+	b.SetupCommandHandlers()
 
 	if err := b.Setup(
 		b.Handler,
@@ -118,9 +116,7 @@ func Run(args []string) error {
 		return err
 	}
 
-	if _, err = b.Client.Rest().SetGuildCommands(b.Client.ApplicationID(), b.Config.Disc.GuildID, commands.Commands); err != nil {
-		logDisc.Fatalf("error while setting global commands: ", err)
-	}
+	b.SyncCommands()
 
 	defer func() {
 		b.Close()
