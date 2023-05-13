@@ -22,7 +22,8 @@ func OnReady(b *dbot.Bot) bot.EventListener {
 
 func ReactionAdd(b *dbot.Bot) bot.EventListener {
 	return bot.NewListenerFunc(func(e *events.GuildMessageReactionAdd) {
-		if e.ChannelID == b.Config.Disc.RoleChannel {
+		//e.Member
+		if e.ChannelID == b.Config.Roles.RoleChannel {
 			b.Logger.Debugf("Reaction added! %s", e.Emoji.ID)
 		}
 	})
