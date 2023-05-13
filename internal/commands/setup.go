@@ -25,6 +25,10 @@ var setup = discord.SlashCommandCreate {
 
 func HandleRolesSetup(b *dbot.Bot) handler.CommandHandler {
 	return func(e *handler.CommandEvent) error {
+		if e.Member().Permissions.Missing(discord.PermissionAdministrator) {
+			return response.NoPermission(e)
+		}
+
 		embed := discord.NewEmbedBuilder().
 			SetColor(0x7851a9).
 			AddField(":studio_microphone: - Voice Acting", "", false).

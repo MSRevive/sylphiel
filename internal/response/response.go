@@ -37,3 +37,19 @@ func Error(e *handler.CommandEvent, err error) error {
 		Build(),
 	)
 }
+
+func NoPermission(e *handler.CommandEvent) error {
+	embed := discord.NewEmbedBuilder().
+		SetTitle("No Permission").
+		SetColor(0xcc0000).
+		SetDescription("You don't have permission to this command!").
+		SetTimestamp(time.Now()).
+		SetFooter("Sylphiel", "https://winterfang.com/assets/gfx/bot-avatar.png").
+	Build()
+
+	return e.Respond(discord.InteractionResponseTypeCreateMessage, discord.NewMessageCreateBuilder().
+		SetEphemeral(true).
+		SetEmbeds(embed).
+		Build(),
+	)
+}
