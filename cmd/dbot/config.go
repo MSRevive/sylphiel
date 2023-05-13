@@ -18,6 +18,7 @@ type Config struct {
 	Disc struct {
 		GuildID snowflake.ID
 		DevChannel snowflake.ID
+		RoleChannel snowflake.ID
 	}
 	Webhook struct {
 		Enabled bool
