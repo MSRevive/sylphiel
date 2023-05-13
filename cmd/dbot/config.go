@@ -21,9 +21,7 @@ type Config struct {
 	}
 	Roles struct {
 		RoleChannel snowflake.ID
-		MapRole snowflake.ID
 		VARole snowflake.ID
-		ModelRole snowflake.ID
 	}
 	Webhook struct {
 		Enabled bool
