@@ -21,3 +21,19 @@ func NotImplemented(e *handler.CommandEvent) error {
 		Build(),
 	)
 }
+
+func Error(e *handler.CommandEvent, err error) error {
+	embed := discord.NewEmbedBuilder().
+		SetTitle("500 Internal Server Error").
+		SetColor(0xcc0000).
+		SetDescription(err.Error()).
+		SetTimestamp(time.Now()).
+		SetFooter("Sylphiel", "https://winterfang.com/assets/gfx/bot-avatar.png").
+	Build()
+
+	return e.Respond(discord.InteractionResponseTypeCreateMessage, discord.NewMessageCreateBuilder().
+		SetEphemeral(true).
+		SetEmbeds(embed).
+		Build(),
+	)
+}
