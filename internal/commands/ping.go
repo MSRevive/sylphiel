@@ -16,17 +16,6 @@ func PingHandler(e *handler.CommandEvent) error {
 		gatewayPing = e.Client().Gateway().Latency().String()
 	}
 
-	
-
-	embed := discord.NewEmbedBuilder().
-		SetTitle("Pong!").
-		SetColor(0x009999).
-		SetTimestamp(time.Now()).
-		AddField("Gateway", gatewayPing, false).
-		AddField("FuzzNet", gatewayPing, false).
-		SetFooter("Sylphiel", "https://winterfang.com/assets/gfx/bot-avatar.png").
-	Build()
-
 	return e.CreateMessage(discord.NewMessageCreateBuilder().
 		SetEphemeral(true).
 		SetContentf("pong!, responded in %s", gatewayPing).

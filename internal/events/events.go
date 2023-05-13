@@ -12,9 +12,9 @@ import (
 )
 
 func OnReady(b *dbot.Bot) bot.EventListener {
-	/*return bot.NewListenerFunc(func(e *events.Ready) {
-		e.Client().Rest().CreateMessage(b.Config.Discord.DevChannel, discord.NewMessageCreateBuilder().SetContent("Bot loaded.").Build())
-	})*/
+	// return bot.NewListenerFunc(func(e *events.Ready) {
+	// 	e.Client().Rest().CreateMessage(b.Config.Disc.DevChannel, discord.NewMessageCreateBuilder().SetContent("Bot loaded.").Build())
+	// })
 	return bot.NewListenerFunc(func(e *events.Ready) {
 		b.Logger.Debug("OnReady event called")
 	})

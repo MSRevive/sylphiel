@@ -53,18 +53,11 @@ func (b *Bot) Setup(listeners ...bot.EventListener) (err error) {
 		),
 		bot.WithCacheConfigOpts(
 			cache.WithCaches(cache.FlagsAll),
-			// cache.WithCaches(
-			// 	cache.FlagMembers, 
-			// 	cache.FlagChannels, 
-			// 	cache.FlagGuilds, 
-			// 	cache.FlagRoles,
-			// 	cache.FlagVoiceStates,
-			// ),
 			cache.WithMemberCachePolicy(func(member discord.Member) bool {
 				return member.User.ID == b.Client.ID()
 			}),
 		),
-		bot.WithLogger(b.Logger),
+		//bot.WithLogger(b.Logger),
 		bot.WithEventListeners(listeners...),
 	)
 
@@ -72,31 +65,31 @@ func (b *Bot) Setup(listeners ...bot.EventListener) (err error) {
 }
 
 func (b *Bot) SetupCommandHandlers() {
-	b.Handler.HandleCommand("/ping", commands.PingHandler)
-	b.Handler.HandleCommand("/restore", commands.RestoreHandler)
+	b.Handler.Command("/ping", commands.PingHandler)
+	b.Handler.Command("/restore", commands.RestoreHandler)
 }
 
 func (b *Bot) SyncCommands() {
-	if b.Config.Disc.GuildID.String() == "" {
-		b.Logger.Info("Syncing commands globally...");
-		if _, err := b.Client.Rest().SetGlobalCommands(b.Client.ApplicationID(), commands.Commands); err != nil {
-			b.Logger.Errorf("Failed to sync commands: %s", err)
-		}
-		return
-	}
+	// if b.Config.Disc.GuildID.String() == "" {
+	// 	b.Logger.Info("Syncing commands globally...");
+	// 	if _, err := b.Client.Rest().SetGlobalCommands(b.Client.ApplicationID(), commands.Commands); err != nil {
+	// 		b.Logger.Errorf("Failed to sync commands: %s", err)
+	// 	}
+	// 	return
+	// }
 
-	b.Logger.Info("Syncing commands with guild: %s...", b.Config.Disc.GuildID);
+	b.Logger.Infof("Syncing commands with guild: %s...", b.Config.Disc.GuildID);
 	if _, err := b.Client.Rest().SetGuildCommands(b.Client.ApplicationID(), b.Config.Disc.GuildID, commands.Commands); err != nil {
 		b.Logger.Errorf("Failed to sync commands: %s", err)
 	}
 
-	if err := b.Client.Rest().DeleteGlobalCommand(b.Client.ApplicationID(), 1067673174449340418); err != nil {
-		b.Logger.Errorf("Failed to sync commands: %s", err)
-	}
+	// if err := b.Client.Rest().DeleteGlobalCommand(b.Client.ApplicationID(), 1067673174449340418); err != nil {
+	// 	b.Logger.Errorf("Failed to sync commands: %s", err)
+	// }
 
-	if err := b.Client.Rest().DeleteGlobalCommand(b.Client.ApplicationID(), 1079171151831498762); err != nil {
-		b.Logger.Errorf("Failed to sync commands: %s", err)
-	}
+	// if err := b.Client.Rest().DeleteGlobalCommand(b.Client.ApplicationID(), 1079171151831498762); err != nil {
+	// 	b.Logger.Errorf("Failed to sync commands: %s", err)
+	// }
 }
 
 func (b *Bot) Start() error {
@@ -109,6 +102,8 @@ func (b *Bot) Start() error {
 }
 
 func (b *Bot) Close() {
-	b.Webhook.Close(context.TODO())
+	if (b.Config.Webhook.Enabled) {
+		b.Webhook.Close(context.TODO())
+	}
 	b.Client.Close(b.Ctx)
 }

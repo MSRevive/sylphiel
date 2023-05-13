@@ -15,6 +15,7 @@ import (
 	"github.com/msrevive/sylphiel/internal/events"
 
 	"github.com/saintwish/auralog"
+	"github.com/saintwish/auralog/rw"
 )
 
 var (
@@ -47,11 +48,11 @@ func initLoggers(filename string, dir string, level string, expire string) {
 	flagsError := auralog.Ldate | auralog.Ltime | auralog.Lmicroseconds | auralog.Lshortfile
 	flagsDebug := auralog.Ltime | auralog.Lmicroseconds | auralog.Lshortfile
 
-	file := &auralog.RotateWriter{
+	file := &rw.RotateWriter{
 		Dir: dir,
 		Filename: filename,
-		ExTime: ex,
-		MaxSize: 5 * auralog.Megabyte,
+		ExpireTime: ex,
+		MaxSize: 5 * rw.Megabyte,
 	}
 
 	logCore = auralog.New(auralog.Config{
@@ -104,6 +105,7 @@ func Run(args []string) error {
 	logCore.Println("Setting command handlers...")
 	b.SetupCommandHandlers()
 
+	logCore.Println("Configuring bot...")
 	if err := b.Setup(
 		b.Handler,
 		events.OnReady(b),
@@ -117,7 +119,7 @@ func Run(args []string) error {
 	}
 
 	b.SyncCommands()
-
+	
 	defer func() {
 		b.Close()
 		cancel()
