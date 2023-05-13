@@ -13,7 +13,9 @@ import (
 	
 	"github.com/msrevive/sylphiel/cmd/dbot"
 	"github.com/msrevive/sylphiel/internal/events"
+	"github.com/msrevive/sylphiel/internal/commands"
 
+	"github.com/disgoorg/disgo/handler"
 	"github.com/saintwish/auralog"
 	"github.com/saintwish/auralog/rw"
 )
@@ -102,9 +104,6 @@ func Run(args []string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	b := dbot.New(ctx, logDisc, config)
 
-	logCore.Println("Setting command handlers...")
-	b.SetupCommandHandlers()
-
 	logCore.Println("Configuring bot...")
 	if err := b.Setup(
 		b.Handler,
@@ -113,12 +112,23 @@ func Run(args []string) error {
 		return err
 	}
 
+	logCore.Println("Registering command handlers")
+	b.Handler.Command("/ping", commands.HandlePing)
+	b.Handler.Command("/restore", commands.HandleRestore)
+	b.Handler.Route("/setup", func(cr handler.Router) {
+		cr.Command("/roles", commands.HandleRolesSetup(b))
+		cr.Command("/serverlist", commands.HandleServerListSetup)
+	})
+
 	logCore.Println("Connecting to Discord gateway...")
 	if err := b.Start(); err != nil {
 		return err
 	}
 
-	b.SyncCommands()
+	logCore.Printf("Syncing commands with guild %s", b.Config.Disc.GuildID)
+	if _, err := b.Client.Rest().SetGuildCommands(b.Client.ApplicationID(), b.Config.Disc.GuildID, commands.Commands); err != nil {
+		logCore.Errorf("Failed to sync commands: %s", err)
+	}
 	
 	defer func() {
 		b.Close()
