@@ -47,6 +47,7 @@ func (b *Bot) Setup(listeners ...bot.EventListener) (err error) {
 				gateway.IntentGuildWebhooks,
 				gateway.IntentGuildIntegrations,
 				gateway.IntentMessageContent,
+				gateway.IntentGuildMessageReactions,
 			),
 		),
 		bot.WithCacheConfigOpts(

@@ -108,6 +108,7 @@ func Run(args []string) error {
 	if err := b.Setup(
 		b.Handler,
 		events.OnReady(b),
+		events.ReactionAdd(b),
 	); err != nil {
 		return err
 	}

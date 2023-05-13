@@ -22,11 +22,13 @@ func OnReady(b *dbot.Bot) bot.EventListener {
 
 func ReactionAdd(b *dbot.Bot) bot.EventListener {
 	return bot.NewListenerFunc(func(e *events.GuildMessageReactionAdd) {
-		//e.Member
-		//e.Client().Rest().AddMemberRole(e.GuildID, e.Member.User.ID, b.Config.Discord.DefaultRole)
+		if e.UserID == b.Client.ID() {
+			return
+		}
+
 		if e.ChannelID == b.Config.Roles.RoleChannel {
-			if *e.Emoji.Name == ":microphone2:" {
-				b.Logger.Debugf("Reaction added! %s", e.Emoji.ID)
+			if *e.Emoji.Name == "🎙️" {
+				e.Client().Rest().AddMemberRole(e.GuildID, e.UserID, b.Config.Roles.VARole)
 			}
 		}
 	})
