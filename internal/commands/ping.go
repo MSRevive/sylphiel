@@ -10,7 +10,7 @@ var ping = discord.SlashCommandCreate {
 	Description: "Ping command",
 }
 
-func PingHandler(e *handler.CommandEvent) error {
+func HandlePing(e *handler.CommandEvent) error {
 	var gatewayPing string
 	if e.Client().HasGateway() {
 		gatewayPing = e.Client().Gateway().Latency().String()

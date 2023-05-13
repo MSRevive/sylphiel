@@ -38,6 +38,6 @@ var restore = discord.SlashCommandCreate {
 	},
 }
 
-func RestoreHandler(e *handler.CommandEvent) error {
+func HandleRestore(e *handler.CommandEvent) error {
 	return response.NotImplemented(e)
 }

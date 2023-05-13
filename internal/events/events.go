@@ -19,3 +19,11 @@ func OnReady(b *dbot.Bot) bot.EventListener {
 		b.Logger.Debug("OnReady event called")
 	})
 }
+
+func ReactionAdd(b *dbot.Bot) bot.EventListener {
+	return bot.NewListenerFunc(func(e *events.GuildMessageReactionAdd) {
+		if e.ChannelID == b.Config.Disc.RoleChannel {
+			b.Logger.Debugf("Reaction added! %s", e.Emoji.ID)
+		}
+	})
+}

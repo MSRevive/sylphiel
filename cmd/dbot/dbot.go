@@ -57,7 +57,7 @@ func (b *Bot) Setup(listeners ...bot.EventListener) (err error) {
 				return member.User.ID == b.Client.ID()
 			}),
 		),
-		//bot.WithLogger(b.Logger),
+		bot.WithLogger(b.Logger),
 		bot.WithEventListeners(listeners...),
 	)
 
@@ -65,8 +65,12 @@ func (b *Bot) Setup(listeners ...bot.EventListener) (err error) {
 }
 
 func (b *Bot) SetupCommandHandlers() {
-	b.Handler.Command("/ping", commands.PingHandler)
-	b.Handler.Command("/restore", commands.RestoreHandler)
+	b.Handler.Command("/ping", commands.HandlePing)
+	b.Handler.Command("/restore", commands.HandleRestore)
+	b.Handler.Route("/setup", func(cr handler.Router) {
+		cr.Command("/roles", commands.HandleRolesSetup)
+		cr.Command("/serverlist", commands.HandleServerListSetup)
+	})
 }
 
 func (b *Bot) SyncCommands() {
