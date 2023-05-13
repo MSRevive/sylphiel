@@ -12,6 +12,8 @@ github.com/gorilla/websocket v1.5.0/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/ad
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/saintwish/auralog v1.0.7-0.20230427032150-b2bf77a1cb23 h1:x/CLbClLE2Y+tdndFo607XTR9sq9BfGIikIQcVNdshs=
 github.com/saintwish/auralog v1.0.7-0.20230427032150-b2bf77a1cb23/go.mod h1:5GSGzCizWT5qenUpVl1Yp6439L4QLTvB5WfhC6j6S8k=
+github.com/saintwish/auralog v1.0.7-0.20230513041052-0bf0247a8908 h1:ZNgjpn48GY3ArEH/8u1sUo7Es0sFShGxlWptEfa4yLA=
+github.com/saintwish/auralog v1.0.7-0.20230513041052-0bf0247a8908/go.mod h1:5GSGzCizWT5qenUpVl1Yp6439L4QLTvB5WfhC6j6S8k=
 github.com/sasha-s/go-csync v0.0.0-20210812194225-61421b77c44b h1:qYTY2tN72LhgDj2rtWG+LI6TXFl2ygFQQ4YezfVaGQE=
 github.com/sasha-s/go-csync v0.0.0-20210812194225-61421b77c44b/go.mod h1:/pA7k3zsXKdjjAiUhB5CjuKib9KJGCaLvZwtxGC8U0s=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=

@@ -6,7 +6,7 @@ require (
 	github.com/disgoorg/disgo v0.16.4
 	github.com/disgoorg/log v1.2.0
 	github.com/disgoorg/snowflake/v2 v2.0.1
-	github.com/saintwish/auralog v1.0.7-0.20230427032150-b2bf77a1cb23
+	github.com/saintwish/auralog v1.0.7-0.20230513041052-0bf0247a8908
 	gopkg.in/ini.v1 v1.67.0
 	gopkg.in/yaml.v2 v2.4.0
 )
