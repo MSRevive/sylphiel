@@ -1,7 +1,8 @@
 package events
 
 import (
-	//"fmt"
+	"fmt"
+	"time"
 	"context"
 
 	"github.com/msrevive/sylphiel/cmd/dbot"
@@ -17,11 +18,20 @@ func OnReady(b *dbot.Bot) bot.EventListener {
 	// 	e.Client().Rest().CreateMessage(b.Config.Disc.DevChannel, discord.NewMessageCreateBuilder().SetContent("Bot loaded.").Build())
 	// })
 	return bot.NewListenerFunc(func(e *events.Ready) {
-		if err := b.Client.SetPresence(context.TODO(),
-			gateway.WithListeningActivity("gobby slobby"),
-			gateway.WithOnlineStatus(discord.OnlineStatusOnline),
-		); err != nil {
-			b.Logger.Errorf("Failed to set presence: %s", err)
+		if b.Debug {
+			if err := b.Client.SetPresence(context.TODO(),
+				gateway.WithCompetingActivity("ms_soccer"),
+				gateway.WithOnlineStatus(discord.OnlineStatusDND),
+			); err != nil {
+				b.Logger.Errorf("Failed to set presence: %s", err)
+			}
+		}else{
+			if err := b.Client.SetPresence(context.TODO(),
+				gateway.WithListeningActivity("gobby slobby"),
+				gateway.WithOnlineStatus(discord.OnlineStatusOnline),
+			); err != nil {
+				b.Logger.Errorf("Failed to set presence: %s", err)
+			}
 		}
 	})
 }
@@ -46,21 +56,22 @@ func GuildAuditLogEntryCreate(b *dbot.Bot) bot.EventListener {
 			return 
 		}
 
-		if e.ActionType == discord.AuditLogEventMemberKick {
-			target := discord.UserMention(e.TargetID)
-			targetID := fmt.Sprintf("%s", e.TargetID)
-			reason := fmt.Sprintf("``Reason:`` %s" e.Reason)
+		if e.AuditLogEntry.ActionType == discord.AuditLogEventMemberKick {
+			target := discord.UserMention(*e.AuditLogEntry.TargetID)
+			targetID := fmt.Sprintf("%s", e.AuditLogEntry.TargetID)
+			reason := fmt.Sprintf("``Reason:`` %s", e.AuditLogEntry.Reason)
 
-			embeds := make([]discord.Embed, 1)
-			embeds[0] = discord.NewEmbedBuilder().
+			embed := discord.NewEmbedBuilder().
 			SetColor(0xcc0000).
 			SetTimestamp(time.Now()).
-			SetAuthorIcon("https://winterfang.com/assets/gfx/bot-avatar.png")
+			SetAuthorIcon("https://winterfang.com/assets/gfx/bot-avatar.png").
 			SetAuthorName(target).
 			SetTitle("Member Kicked").
 			SetDescription(reason).
-			SetFooterText(targetID).
-			Build()
+			SetFooterText(targetID)
+
+			embeds := make([]discord.Embed, 1)
+			embeds = append(embeds, embed.Build())
 
 			if _,err := b.Webhook.CreateEmbeds(embeds); err != nil {
 				b.Logger.Error(err)
