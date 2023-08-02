@@ -86,7 +86,7 @@ func Run(args []string) error {
 	}
 
 	fmt.Println("Loading config file...")
-	config, err := dbot.LoadConfig(flgs.configFile, flgs.debug)
+	config, err := dbot.LoadConfig(flgs.configFile)
 	if err != nil {
 		fmt.Printf("Failed to load config: %s", flgs.configFile)
 		return err
@@ -103,12 +103,14 @@ func Run(args []string) error {
 	logCore.Println("Initiating Bot...")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	b := dbot.New(ctx, logDisc, config)
+	b.Debug = flgs.debug
 
 	logCore.Println("Configuring bot...")
 	if err := b.Setup(
 		b.Handler,
 		events.OnReady(b),
 		events.ReactionAdd(b),
+		events.GuildAuditLogEntryCreate(b),
 	); err != nil {
 		return err
 	}

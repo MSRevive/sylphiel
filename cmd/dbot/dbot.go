@@ -24,6 +24,7 @@ type Bot struct {
 	Logger log.Logger
 	Config *Config
 	Ctx context.Context
+	Debug bool
 }
 
 func New(ctx context.Context, logger log.Logger, cfg *Config) *Bot {
