@@ -39,7 +39,7 @@ type Config struct {
 	}
 }
 
-func LoadConfig(path string, dbg bool) (*Config, error) {
+func LoadConfig(path string) (*Config, error) {
 	var cfg Config
 
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
